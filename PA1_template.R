@@ -1,12 +1,5 @@
----
-title: "Reproducible Research: Peer Assessment 1"
-output: 
-  html_document:
-    keep_md: true
----
-
-
 ## Loading and preprocessing the data
+
 # 1.Load the data (i.e. read.csv())
 setwd("C:/Users/user/Documents/Data Science/ReproducibleResearch")
 data <- read.csv("activity.csv", header = TRUE, sep = ",", colClasses=c("numeric", "character", "numeric"))
@@ -18,7 +11,9 @@ data$interval <- as.factor(data$interval)
 # Take a look at the data
 str(data)
 
+## -------------------------------------------------
 ## What is mean total number of steps taken per day?
+
 # 1.Calculate the total number of steps taken per day
 total.steps <- aggregate(steps ~ date, data, sum)
 colnames(total.steps) <- c("date","steps")
@@ -31,7 +26,9 @@ hist(total.steps$steps, main = "Total Number of Steps Taken Daily", breaks=10, x
 steps_mean <- round(mean(total.steps$steps, na.rm=TRUE))
 steps_median <- round(median(total.steps$steps, na.rm=TRUE))
 
+## -------------------------------------------------
 ## What is the average daily activity pattern?
+
 # 1.Make a time series plot (i.e. type = "l") of the 5-minute interval (x-axis) and the average number of steps taken, 
 #   averaged across all days (y-axis)
 library(ggplot2)
@@ -43,7 +40,10 @@ ggplot(data=averages, aes(x=interval, y=steps)) + geom_line() +
 #   contains the maximum number of steps?
 max_steps <- averages[which.max(averages$steps),]
 
+
+## --------------------------------------------------
 ## Imputing missing values
+
 # 1.Calculate and report the total number of missing values in the dataset (i.e. the total number of rows with NAs)
 missing_vals <- sum(is.na(data$steps))
 
@@ -69,7 +69,10 @@ qplot(total.steps, binwidth=1000, main="Total number of steps taken each day", x
 steps_mean_new <- round(mean(total.steps, na.rm=TRUE))
 steps_median_new <- round(median(total.steps, na.rm=TRUE))
 
+
+## ------------------------------------------------------
 ## Are there differences in activity patterns between weekdays and weekends?
+
 # 1.Create a new factor variable in the dataset with two levels - 
 #   "weekday" and "weekend" indicating whether a given date is a weekday or weekend day.
 filled.data$weekdayType <- ifelse(weekdays(filled.data$date) %in% c("Satuday", "Sunday"), "weekend", "weekday")
@@ -81,5 +84,4 @@ steps_by_interval_i <- aggregate(steps ~ interval + weekdayType, filled.data, me
 
 library(lattice)
 xyplot(steps_by_interval_i$steps ~ as.numeric(as.character(steps_by_interval_i$interval))
-       |steps_by_interval_i$weekdayType, main="Average Number of Steps Taken",xlab="Interval", ylab="Steps",layout=c(1,2), type="l")
        |steps_by_interval_i$weekdayType, main="Average Number of Steps Taken",xlab="Interval", ylab="Steps",layout=c(1,2), type="l")
